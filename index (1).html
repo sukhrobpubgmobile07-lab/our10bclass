@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Наш класс — место, где живут дружба, идеи и воспоминания.">
+  <title>Our Class — Наш класс</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+    :root {
+      --bg:#f6f7fb; --surface:#fff; --ink:#20243a; --muted:#747b91;
+      --primary:#6c63ff; --secondary:#a69fff; --line:#e9eaf2;
+      --shadow:0 18px 50px rgba(39,42,80,.08);
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; font-family:'Manrope',Arial,sans-serif; color:var(--ink); background:var(--bg); }
+    /* Фоновые обои */
+    body { background-color:#eef0ff;
+      background-image:
+        radial-gradient(circle at 12% 8%, rgba(167,159,255,.55) 0, transparent 38%),
+        radial-gradient(circle at 88% 14%, rgba(255,196,230,.55) 0, transparent 40%),
+        radial-gradient(circle at 20% 70%, rgba(172,225,245,.50) 0, transparent 42%),
+        radial-gradient(circle at 85% 85%, rgba(200,180,255,.55) 0, transparent 45%),
+        linear-gradient(160deg,#f4f1ff 0%,#eaf3ff 50%,#fdf0fa 100%);
+      background-attachment:fixed; background-size:cover; }
+    body:before { content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.5;
+      background-image:radial-gradient(rgba(108,99,255,.18) 1.5px, transparent 1.6px); background-size:34px 34px; }
+    header { background:rgba(246,247,251,.7); }
+    @media (max-width:600px){ body{background-attachment:scroll;} body:before{background-size:26px 26px;} }
+    a { color:inherit; text-decoration:none; }
+    button { font:inherit; cursor:pointer; }
+    .container { width:min(1120px, calc(100% - 40px)); margin:auto; }
+    header { position:sticky; top:0; z-index:20; background:rgba(246,247,251,.86); backdrop-filter:blur(16px); border-bottom:1px solid rgba(233,234,242,.8); }
+    .nav { height:76px; display:flex; align-items:center; justify-content:space-between; gap:20px; }
+    .brand { display:flex; align-items:center; gap:11px; font-weight:800; letter-spacing:-.5px; }
+    .brand-mark { width:40px; height:40px; display:grid; place-items:center; color:white; border-radius:14px; background:linear-gradient(135deg,var(--primary),#9e79ff); box-shadow:0 8px 20px #756bff55; }
+    .nav-links { display:flex; gap:26px; color:var(--muted); font-size:13px; font-weight:700; }
+    .nav-links a:hover { color:var(--primary); }
+    .menu-btn { display:none; border:0; background:var(--surface); border-radius:12px; padding:10px 13px; }
+    .hero { padding:76px 0 54px; }
+    .hero-grid { display:grid; grid-template-columns:1.08fr .92fr; align-items:center; gap:50px; }
+    .eyebrow { display:inline-flex; gap:8px; align-items:center; color:var(--primary); background:#eeedff; padding:9px 14px; border-radius:30px; font-size:12px; font-weight:800; }
+    h1 { margin:22px 0 18px; font-size:clamp(42px,6vw,70px); line-height:1.04; letter-spacing:-3px; }
+    h1 span { color:var(--primary); }
+    .hero-copy { color:var(--muted); line-height:1.8; max-width:520px; font-size:15px; }
+    .actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:28px; }
+    .btn { border:0; border-radius:14px; padding:14px 20px; font-weight:800; font-size:13px; transition:.2s; }
+    .btn-primary { color:#fff; background:var(--primary); box-shadow:0 10px 22px #6c63ff3d; }
+    .btn-primary:hover { transform:translateY(-2px); background:#554be9; }
+    .btn-light { background:#fff; color:var(--ink); border:1px solid var(--line); }
+    .hero-art { min-height:390px; position:relative; display:grid; place-items:center; }
+    .blob { width:min(390px,90%); aspect-ratio:1; border-radius:37% 63% 56% 44% / 43% 40% 60% 57%; background:linear-gradient(145deg,#dcd9ff,#f5dfff 55%,#d7efff); position:absolute; transform:rotate(-8deg); }
+    .photo-placeholder { position:relative; width:76%; height:280px; border:9px solid white; border-radius:28px; background:linear-gradient(135deg,#b8b2ff,#f0c9e8); box-shadow:var(--shadow); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:#fff; padding:25px; transform:rotate(3deg); }
+    .photo-placeholder strong { font-size:25px; line-height:1.2; }
+    .photo-placeholder small { margin-top:10px; opacity:.9; }
+    .float-card { position:absolute; background:#fff; border-radius:17px; padding:14px 17px; box-shadow:var(--shadow); font-size:12px; font-weight:800; }
+    .float-one { left:0; top:70px; } .float-two { right:0; bottom:55px; }
+    section { padding:58px 0; }
+    .section-head { display:flex; align-items:end; justify-content:space-between; gap:20px; margin-bottom:26px; }
+    .kicker { color:var(--primary); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; }
+    h2 { font-size:clamp(28px,4vw,38px); letter-spacing:-1.5px; margin:8px 0 0; }
+    .section-desc { color:var(--muted); font-size:13px; line-height:1.7; max-width:440px; }
+    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .stat, .panel, .person, .memory, .project { background:var(--surface); border:1px solid var(--line); border-radius:22px; box-shadow:0 8px 28px rgba(39,42,80,.035); }
+    .stat { padding:24px; }
+    .stat strong { display:block; font-size:32px; color:var(--primary); letter-spacing:-1px; }
+    .stat span { color:var(--muted); font-size:12px; font-weight:700; }
+    .people-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+    .person { padding:18px; text-align:center; transition:.2s; }
+    .person { cursor:default; transition:transform .25s ease, box-shadow .25s ease; }
+    .person:hover { transform:scale(1.07); box-shadow:0 18px 42px rgba(39,42,80,.14); position:relative; z-index:2; }
+    .person h3 { overflow-wrap:anywhere; line-height:1.45; }
+    .avatar { width:76px; height:76px; margin:0 auto 13px; border-radius:24px; display:grid; place-items:center; color:white; font-size:26px; font-weight:800; background:linear-gradient(135deg,#8d83ff,#e0a8d8); }
+    .person h3 { margin:0 0 5px; font-size:14px; }
+    .person p { margin:0; color:var(--muted); font-size:11px; }
+    .search-wrap { display:flex; gap:10px; align-items:center; }
+    .search { width:210px; border:1px solid var(--line); background:white; border-radius:12px; padding:11px 13px; outline:none; }
+    .search:focus { border-color:var(--primary); }
+    .memories-grid { display:grid; grid-template-columns:1.2fr .8fr .8fr; gap:15px; }
+    .memory { min-height:190px; padding:22px; display:flex; flex-direction:column; justify-content:end; color:white; overflow:hidden; position:relative; background:linear-gradient(145deg,#8279ff,#c6a5ed); }
+    .memory:nth-child(2) { background:linear-gradient(145deg,#f0a9c9,#9f8bff); }
+    .memory:nth-child(3) { background:linear-gradient(145deg,#7ac6cf,#8c91f2); }
+    .memory:before { content:"✦"; position:absolute; right:20px; top:8px; font-size:90px; opacity:.2; }
+    .memory strong { font-size:18px; position:relative; }
+    .memory span { font-size:11px; opacity:.85; margin-top:5px; position:relative; }
+    .quote { background:#242640; color:white; border-radius:26px; padding:38px; display:flex; justify-content:space-between; align-items:center; gap:25px; }
+    .quote p { margin:0; max-width:680px; font-size:clamp(18px,3vw,25px); line-height:1.5; font-weight:700; }
+    .quote span { color:#b9b4ff; font-size:12px; white-space:nowrap; }
+    footer { padding:30px 0 45px; color:var(--muted); font-size:11px; }
+    .footer-inner { display:flex; justify-content:space-between; gap:15px; border-top:1px solid var(--line); padding-top:22px; }
+    .reveal { opacity:0; transform:translateY(18px); transition:.65s ease; }
+    .reveal.visible { opacity:1; transform:none; }
+    @media (max-width:850px) {
+      .hero-grid { grid-template-columns:1fr; gap:10px; }
+      .hero { padding-top:48px; }
+      .hero-art { min-height:360px; margin-top:34px; }
+      .hero-grid > div:first-child { position:relative; z-index:3; }
+      .people-grid { grid-template-columns:repeat(2,1fr); }
+      .memories-grid { grid-template-columns:1fr 1fr; }
+      .memory:first-child { grid-column:span 2; }
+      }
+    @media (max-width:600px) {
+      .container { width:min(100% - 28px,1120px); }
+      .nav { height:66px; }
+      .menu-btn { display:block; }
+      .nav-links { display:none; position:absolute; top:66px; left:14px; right:14px; padding:18px; background:white; border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); flex-direction:column; gap:16px; }
+      .nav-links.open { display:flex; }
+      h1 { letter-spacing:-2px; }
+      .hero-grid > div:first-child { position:relative; z-index:3; }
+      .hero-art { min-height:400px; margin-top:44px; padding:30px 0; overflow:hidden; border-radius:30px; }
+      .blob { width:min(300px,78%); }
+      .photo-placeholder { height:200px; width:80%; }
+      .photo-placeholder strong { font-size:20px; }
+      .float-one { top:25px; } .float-two { bottom:25px; }
+      .stats { gap:8px; }
+      .stat { padding:15px 11px; } .stat strong { font-size:25px; } .stat span { font-size:10px; }
+      .section-head { align-items:start; flex-direction:column; }
+      .search { width:100%; }
+      .search-wrap { width:100%; }
+      .memories-grid { grid-template-columns:1fr; }
+      .memory:first-child { grid-column:auto; }
+      .quote { padding:26px; flex-direction:column; align-items:start; }
+      .footer-inner { flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#home"><span class="brand-mark">✦</span> OUR CLASS</a>
+      <button class="menu-btn" id="menuBtn" aria-label="Открыть меню">☰</button>
+      <nav class="nav-links" id="navLinks">
+        <a href="#about">О классе</a><a href="#students">Ученики</a><a href="#memories">Воспоминания</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">✦ НАША ИСТОРИЯ • НАШ КЛАСС</div>
+          <h1>Вместе мы<br><span>больше,</span> чем класс.</h1>
+          <p class="hero-copy">Здесь живут наши идеи, маленькие победы, большие мечты и самые тёплые воспоминания. Добро пожаловать на страницу нашего класса!</p>
+          <div class="actions"><a class="btn btn-primary" href="#students">Познакомиться с нами ↗</a><a class="btn btn-light" href="#memories">Наши моменты</a></div>
+        </div>
+        <div class="hero-art">
+          <div class="blob"></div>
+          <div class="photo-placeholder"><strong>МЕСТО<br>ДЛЯ НАШЕГО<br>ОБЩЕГО ФОТО</strong><small>Добавьте сюда фотографию класса</small></div>
+          <div class="float-card float-one">🎓 Учимся и растём</div>
+          <div class="float-card float-two">💜 Дружба навсегда</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="container">
+        <div class="section-head reveal"><div><div class="kicker">Немного о нас</div><h2>Один класс — много историй</h2></div><p class="section-desc">Мы разные, но нас объединяют общие цели, дружба и желание каждый день становиться лучше.</p></div>
+        <div class="stats reveal">
+          <div class="stat"><strong id="studentCount">6</strong><span>УЧЕНИКА В КЛАССЕ</span></div>
+          <div class="stat"><strong>100%</strong><span>КОМАНДНЫЙ ДУХ</span></div>
+          <div class="stat"><strong>∞</strong><span>ПЛАНОВ И МЕЧТАНИЙ</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="students">
+      <div class="container">
+        <div class="section-head reveal"><div><div class="kicker">Наша команда</div><h2>Познакомьтесь с нами</h2></div><div class="search-wrap"><input class="search" id="studentSearch" type="search" placeholder="Найти ученика..."></div></div>
+        <div class="people-grid" id="peopleGrid">
+          <!-- Измените имена и подписи на данные вашего класса -->
+          <article class="person" data-name="Азизаматов Сухроб Шавкатович"><div class="avatar">АС</div><h3>Азизаматов Сухроб Шавкатович</h3><p>Ученик нашего класса</p></article>
+          <article class="person" data-name="Абдумажитов Афрузбек Абдулазиз"><div class="avatar">АА</div><h3>Абдумажитов Афрузбек Абдулазиз</h3><p>Ученик нашего класса</p></article>
+          <article class="person" data-name="Абарова Вероника Дамировна"><div class="avatar">АВ</div><h3>Абарова Вероника Дамировна</h3><p>Ученица нашего класса</p></article>
+          <article class="person" data-name="Абдувалиева Мохичехра Улугбековна"><div class="avatar">АМ</div><h3>Абдувалиева Мохичехра Улугбековна</h3><p>Ученица нашего класса</p></article>
+          <article class="person" data-name="Ашурбаев Симонали Отажонавич"><div class="avatar">АС</div><h3>Ашурбаев Симонали Отажонавич</h3><p>Ученик нашего класса</p></article>
+          <article class="person" data-name="Антипина Сабрина Акмаловна"><div class="avatar">АС</div><h3>Антипина Сабрина Акмаловна</h3><p>Ученица нашего класса</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="memories">
+      <div class="container">
+        <div class="section-head reveal"><div><div class="kicker">Моменты, которые важны</div><h2>Наша галерея воспоминаний</h2></div><p class="section-desc">Экскурсии, праздники, школьные будни и события, которые хочется сохранить.</p></div>
+        <div class="memories-grid reveal">
+          <div class="memory"><strong>Школьные события</strong><span>Праздники и яркие дни</span></div>
+          <div class="memory"><strong>Наши победы</strong><span>Достижения и награды</span></div>
+          <div class="memory"><strong>Просто вместе</strong><span>Дружба в каждом кадре</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="quote reveal"><p>«По отдельности мы — просто ученики. Вместе мы — команда, способная на многое!»</p><span>— НАШ КЛАСС 💜</span></div>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="container footer-inner"><span>© <span id="year"></span> Our Class. Создано с ❤️</span><span>Наш класс • Наши моменты • Наше будущее</span></div></footer>
+
+  <script>
+    // Мобильное меню
+    const menuBtn = document.getElementById('menuBtn');
+    const navLinks = document.getElementById('navLinks');
+    menuBtn.addEventListener('click', () => navLinks.classList.toggle('open'));
+    navLinks.querySelectorAll('a').forEach(link => link.addEventListener('click', () => navLinks.classList.remove('open')));
+
+    // Поиск учеников по имени
+    const searchInput = document.getElementById('studentSearch');
+    const studentCards = [...document.querySelectorAll('.person')];
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.trim().toLocaleLowerCase('ru');
+      studentCards.forEach(card => {
+        card.hidden = !card.dataset.name.toLocaleLowerCase('ru').includes(query);
+      });
+    });
+
+    // Появление блоков при прокрутке
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
