@@ -28,6 +28,21 @@
       background-image:radial-gradient(rgba(108,99,255,.18) 1.5px, transparent 1.6px); background-size:34px 34px; }
     header { background:rgba(246,247,251,.7); }
     @media (max-width:600px){ body{background-attachment:scroll;} body:before{background-size:26px 26px;} }
+
+    /* Вход через Telegram */
+    body.locked header, body.locked main, body.locked footer { display:none; }
+    .login { display:none; min-height:100vh; align-items:center; justify-content:center; padding:20px; }
+    body.locked .login { display:flex; }
+    .login-card { width:min(440px,100%); background:rgba(255,255,255,.88); backdrop-filter:blur(16px); border:1px solid var(--line); border-radius:28px; padding:38px 30px; text-align:center; box-shadow:var(--shadow); }
+    .login-card .brand-mark { margin:0 auto 18px; width:56px; height:56px; font-size:24px; border-radius:18px; }
+    .login-card h2 { margin:0 0 10px; font-size:28px; letter-spacing:-1px; }
+    .login-card p { color:var(--muted); font-size:13px; line-height:1.7; margin:0 0 22px; }
+    #tgButton { display:flex; justify-content:center; min-height:48px; }
+    .login-error { display:none; margin-top:18px; padding:12px 14px; border-radius:14px; background:#ffecef; color:#c0334d; font-size:12px; font-weight:700; line-height:1.6; }
+    .login-error.show { display:block; }
+    .user-box { display:flex; align-items:center; gap:10px; font-size:12px; font-weight:800; }
+    .user-box button { border:1px solid var(--line); background:#fff; border-radius:10px; padding:8px 12px; font-size:12px; font-weight:800; color:var(--ink); }
+    @media (max-width:600px){ .user-box span { display:none; } }
     a { color:inherit; text-decoration:none; }
     button { font:inherit; cursor:pointer; }
     .container { width:min(1120px, calc(100% - 40px)); margin:auto; }
@@ -94,7 +109,8 @@
     @media (max-width:850px) {
       .hero-grid { grid-template-columns:1fr; gap:10px; }
       .hero { padding-top:48px; }
-      .hero-art { min-height:330px; }
+      .hero-art { min-height:360px; margin-top:34px; }
+      .hero-grid > div:first-child { position:relative; z-index:3; }
       .people-grid { grid-template-columns:repeat(2,1fr); }
       .memories-grid { grid-template-columns:1fr 1fr; }
       .memory:first-child { grid-column:span 2; }
@@ -106,8 +122,11 @@
       .nav-links { display:none; position:absolute; top:66px; left:14px; right:14px; padding:18px; background:white; border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); flex-direction:column; gap:16px; }
       .nav-links.open { display:flex; }
       h1 { letter-spacing:-2px; }
-      .hero-art { min-height:285px; }
-      .photo-placeholder { height:220px; }
+      .hero-grid > div:first-child { position:relative; z-index:3; }
+      .hero-art { min-height:400px; margin-top:44px; padding:30px 0; overflow:hidden; border-radius:30px; }
+      .blob { width:min(300px,78%); }
+      .photo-placeholder { height:200px; width:80%; }
+      .photo-placeholder strong { font-size:20px; }
       .float-one { top:25px; } .float-two { bottom:25px; }
       .stats { gap:8px; }
       .stat { padding:15px 11px; } .stat strong { font-size:25px; } .stat span { font-size:10px; }
@@ -122,6 +141,16 @@
   </style>
 </head>
 <body>
+  <div class="login" id="login">
+    <div class="login-card">
+      <div class="brand-mark">✦</div>
+      <h2>Вход для учеников</h2>
+      <p>Войдите через свой аккаунт Telegram, чтобы открыть страницу нашего класса.</p>
+      <div id="tgButton"></div>
+      <div class="login-error" id="loginError"></div>
+    </div>
+  </div>
+
   <header>
     <div class="container nav">
       <a class="brand" href="#home"><span class="brand-mark">✦</span> OUR CLASS</a>
@@ -129,6 +158,7 @@
       <nav class="nav-links" id="navLinks">
         <a href="#about">О классе</a><a href="#students">Ученики</a><a href="#memories">Воспоминания</a>
       </nav>
+      <div class="user-box"><span id="userName"></span><button id="logoutBtn">Выйти</button></div>
     </div>
   </header>
 
@@ -154,7 +184,7 @@
       <div class="container">
         <div class="section-head reveal"><div><div class="kicker">Немного о нас</div><h2>Один класс — много историй</h2></div><p class="section-desc">Мы разные, но нас объединяют общие цели, дружба и желание каждый день становиться лучше.</p></div>
         <div class="stats reveal">
-          <div class="stat"><strong id="studentCount">6</strong><span>УЧЕНИКА В КЛАССЕ</span></div>
+          <div class="stat"><strong id="studentCount">4</strong><span>УЧЕНИКА В КЛАССЕ</span></div>
           <div class="stat"><strong>100%</strong><span>КОМАНДНЫЙ ДУХ</span></div>
           <div class="stat"><strong>∞</strong><span>ПЛАНОВ И МЕЧТАНИЙ</span></div>
         </div>
@@ -166,12 +196,10 @@
         <div class="section-head reveal"><div><div class="kicker">Наша команда</div><h2>Познакомьтесь с нами</h2></div><div class="search-wrap"><input class="search" id="studentSearch" type="search" placeholder="Найти ученика..."></div></div>
         <div class="people-grid" id="peopleGrid">
           <!-- Измените имена и подписи на данные вашего класса -->
-          <article class="person" data-name="Азизаматов Сухроб Шавкатович"><div class="avatar">АС</div><h3>Азизаматов Сухроб Шавкатович</h3><p>Ученик нашего класса</p></article>
-          <article class="person" data-name="Абдумажитов Афрузбек Абдулазиз"><div class="avatar">АА</div><h3>Абдумажитов Афрузбек Абдулазиз</h3><p>Ученик нашего класса</p></article>
-          <article class="person" data-name="Абарова Вероника Дамировна"><div class="avatar">АВ</div><h3>Абарова Вероника Дамировна</h3><p>Ученица нашего класса</p></article>
-          <article class="person" data-name="Абдувалиева Мохичехра Улугбековна"><div class="avatar">АМ</div><h3>Абдувалиева Мохичехра Улугбековна</h3><p>Ученица нашего класса</p></article>
-          <article class="person" data-name="Ашурбаев Симонали Отажонавич"><div class="avatar">АС</div><h3>Ашурбаев Симонали Отажонавич</h3><p>Ученик нашего класса</p></article>
-          <article class="person" data-name="Антипина Сабрина Акмаловна"><div class="avatar">АС</div><h3>Антипина Сабрина Акмаловна</h3><p>Ученица нашего класса</p></article>
+          <article class="person" data-name="Сайдуллаева Хадича"><div class="avatar">СХ</div><h3>Сайдуллаева Хадича</h3><p>Ученица нашего класса</p></article>
+          <article class="person" data-name="Фарходов Сардор"><div class="avatar">ФС</div><h3>Фарходов Сардор</h3><p>Ученик нашего класса</p></article>
+          <article class="person" data-name="Абарова Вероника"><div class="avatar">АВ</div><h3>Абарова Вероника</h3><p>Ученица нашего класса</p></article>
+          <article class="person" data-name="Азизматов Сухроб"><div class="avatar">АС</div><h3>Азизматов Сухроб</h3><p>Ученик нашего класса</p></article>
         </div>
       </div>
     </section>
@@ -223,6 +251,50 @@
       });
     }, { threshold: 0.12 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+
+    // ===== Вход через Telegram =====
+    // Список разрешённых учеников (Telegram username без @, в нижнем регистре).
+    // Чтобы добавить ученика — допишите его username сюда.
+    const ALLOWED = ['h_0330','lenor_077','nikaalina','myxring'];
+    const BOT = 'OurClassStudentsBot';
+    const KEY = 'ourclass_user';
+    const loginError = document.getElementById('loginError');
+
+    function getUser(){ try { return JSON.parse(localStorage.getItem(KEY)); } catch(e){ return null; } }
+    function saveUser(u){ try { localStorage.setItem(KEY, JSON.stringify(u)); } catch(e){} }
+    function clearUser(){ try { localStorage.removeItem(KEY); } catch(e){} }
+    function showSite(u){
+      document.body.classList.remove('locked');
+      document.getElementById('userName').textContent = '👋 ' + (u.first_name || '@' + u.username);
+    }
+    window.onTelegramAuth = function(user){
+      const name = (user.username || '').toLowerCase();
+      if (!ALLOWED.includes(name)) {
+        loginError.textContent = 'Вас нет в списке класса' + (user.username ? ' (@' + user.username + ')' : ' — у вас не задан username в Telegram') + '. Напишите администратору.';
+        loginError.classList.add('show');
+        return;
+      }
+      saveUser({ id:user.id, first_name:user.first_name, username:user.username, t:Date.now() });
+      showSite(user);
+    };
+    document.getElementById('logoutBtn').addEventListener('click', () => { clearUser(); location.reload(); });
+
+    document.body.classList.add('locked');
+    const saved = getUser();
+    if (saved && ALLOWED.includes((saved.username||'').toLowerCase())) {
+      showSite(saved);
+    } else {
+      const tg = document.createElement('script');
+      tg.async = true;
+      tg.src = 'https://telegram.org/js/telegram-widget.js?22';
+      tg.setAttribute('data-telegram-login', BOT);
+      tg.setAttribute('data-size', 'large');
+      tg.setAttribute('data-radius', '14');
+      tg.setAttribute('data-onauth', 'onTelegramAuth(user)');
+      tg.setAttribute('data-request-access', 'write');
+      document.getElementById('tgButton').appendChild(tg);
+    }
 
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
